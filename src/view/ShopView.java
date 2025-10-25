@@ -1,176 +1,92 @@
 package view;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
+import java.awt.*;
+import java.awt.event.*;
 import main.Shop;
 import utils.Constants;
 
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-
-import java.awt.Font;
-import javax.swing.SwingConstants;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.ActionEvent;
-
-public class ShopView extends JFrame implements ActionListener, KeyListener{
+public class ShopView extends JFrame implements ActionListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	private Shop shop;
-	
+
 	private JPanel contentPane;
-	private JButton btnExportInventory;
 	private JButton btnShowCash;
 	private JButton btnAddProduct;
 	private JButton btnAddStock;
 	private JButton btnRemoveProduct;
-	
-	
-	
+	private JButton btnExportInventory; 
 
-	public Shop getShop() {
-		return shop;
-	}
-
-	public void setShop(Shop shop) {
-		this.shop = shop;
-	}
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ShopView frame = new ShopView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public ShopView() {
-		setTitle("MiTenda.com - Menu principal");
-		// listen key
+		setTitle("MiTenda.com - Menú principal");
 		addKeyListener(this);
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
-		
-		// create shop
+
+		// CERAR TIENDA
 		shop = new Shop();
 		shop.loadInventory();
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel lblShowCash = new JLabel("Seleccione o pulse una opción:");
-		lblShowCash.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		lblShowCash.setBounds(57, 20, 236, 14);
-		contentPane.add(lblShowCash);
-		
-		// option Export Inventory
-		btnExportInventory = new JButton("0. Exportar Inventorio");
-		btnExportInventory.setHorizontalAlignment(SwingConstants.LEFT);
-		btnExportInventory.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		btnExportInventory.setBounds(99, 40, 236, 40);
-		contentPane.add(btnExportInventory);
-		// listen button
-		btnExportInventory.addActionListener(this);
-		
-		// option count cash
+
+		JLabel lblTitle = new JLabel("Seleccione o pulse una opción:");
+		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		lblTitle.setBounds(57, 20, 300, 20);
+		contentPane.add(lblTitle);
+
+		// 1. CONTAR CAJA
 		btnShowCash = new JButton("1. Contar caja");
 		btnShowCash.setHorizontalAlignment(SwingConstants.LEFT);
 		btnShowCash.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnShowCash.setBounds(99, 90, 236, 40);
-		contentPane.add(btnShowCash);
-		// listen button
 		btnShowCash.addActionListener(this);
-		
-		// option add product
+		contentPane.add(btnShowCash);
+
+		// 2. AÑADIR PRODUCTO
 		btnAddProduct = new JButton("2. Añadir producto");
 		btnAddProduct.setHorizontalAlignment(SwingConstants.LEFT);
 		btnAddProduct.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnAddProduct.setBounds(99, 140, 236, 40);
-		contentPane.add(btnAddProduct);
-		// listen button
 		btnAddProduct.addActionListener(this);
-		
-		// option add stock
+		contentPane.add(btnAddProduct);
+
+		// 3. AÑADIR STOCK
 		btnAddStock = new JButton("3. Añadir stock");
 		btnAddStock.setHorizontalAlignment(SwingConstants.LEFT);
 		btnAddStock.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnAddStock.setBounds(99, 190, 236, 40);
-		contentPane.add(btnAddStock);
-		// listen button
 		btnAddStock.addActionListener(this);
+		contentPane.add(btnAddStock);
 
-		// option add product
+		// 9. ELIMINAR PRODUCTO
 		btnRemoveProduct = new JButton("9. Eliminar producto");
 		btnRemoveProduct.setHorizontalAlignment(SwingConstants.LEFT);
 		btnRemoveProduct.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnRemoveProduct.setBounds(99, 240, 236, 40);
-		contentPane.add(btnRemoveProduct);
-		// listen button
 		btnRemoveProduct.addActionListener(this);
-	}
+		contentPane.add(btnRemoveProduct);
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-		
+		// 0. EXPORTAR INVENTORIO
+		btnExportInventory = new JButton("0. Exportar inventario");
+		btnExportInventory.setHorizontalAlignment(SwingConstants.LEFT);
+		btnExportInventory.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		btnExportInventory.setBounds(99, 40, 236, 40);
+		btnExportInventory.addActionListener(this);
+		contentPane.add(btnExportInventory);
 	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		if (e.getKeyChar() == '0' ) {
-			this.openExportView();	
-        }
-		if (e.getKeyChar() == '1' ) {
-			this.openCashView();	
-        }
-		if (e.getKeyChar() == '2') {
-			this.openProductView(Constants.OPTION_ADD_PRODUCT);	
-		}
-		if (e.getKeyChar() == '3') {
-			this.openProductView(Constants.OPTION_ADD_STOCK);
-		}
-		if (e.getKeyChar() == '9') {
-			this.openProductView(Constants.OPTION_REMOVE_PRODUCT);
-		}
-		
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == btnExportInventory) {
-			this.openExportView();						
+			exportInventory();
 		}
 		if (e.getSource() == btnShowCash) {
 			this.openCashView();						
@@ -185,6 +101,62 @@ public class ShopView extends JFrame implements ActionListener, KeyListener{
 			this.openProductView(Constants.OPTION_REMOVE_PRODUCT);				
 		}
 		
+	}
+
+	private void exportInventory() {
+	    boolean ok = shop.writeInventory();
+	    if (ok) {
+	        StringBuilder resumen = new StringBuilder("Inventario exportado correctamente.\n\n");
+	        int i = 1;
+	        for (var p : shop.getInventory()) {
+	            resumen.append(i)
+	                   .append(". ")
+	                   .append(p.getName())
+	                   .append(" - Stock: ")
+	                   .append(p.getStock())
+	                   .append("\n");
+	            i++;
+	        }
+
+	        JOptionPane.showMessageDialog(
+	            this,
+	            resumen.toString(),
+	            "Éxito",
+	            JOptionPane.INFORMATION_MESSAGE
+	        );
+	    } else {
+	        JOptionPane.showMessageDialog(
+	            this,
+	            "Error al exportar el inventario.",
+	            "Error",
+	            JOptionPane.ERROR_MESSAGE
+	        );
+	    }
+	}
+
+
+	@Override
+	public void keyTyped(KeyEvent e) {}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyChar() == '0') {
+			exportInventory();
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {}
+
+	public static void main(String[] args) {
+		EventQueue.invokeLater(() -> {
+			try {
+				ShopView frame = new ShopView();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
 	/**
@@ -212,10 +184,4 @@ public class ShopView extends JFrame implements ActionListener, KeyListener{
         dialog.setModal(true);
         dialog.setVisible(true);
 	}
-	
-	public void openExportView() {
-		
-	}
-	
-	
 }

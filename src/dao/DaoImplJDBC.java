@@ -75,6 +75,12 @@ public class DaoImplJDBC implements Dao {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public Employee getEmployee(int employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 
