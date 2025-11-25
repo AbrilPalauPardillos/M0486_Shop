@@ -12,6 +12,18 @@ import model.Employee;
 public class DaoImplFile implements Dao {
 
 	@Override
+	public void addProduct(Product product) {
+	}
+
+	@Override
+	public void updateProduct(Product product) {
+	}
+
+	@Override
+	public void deleteProduct(int productId) {
+	}
+	
+	@Override
 	public List<Product> getInventory() {
 		List<Product> inventory = new ArrayList<>();
 		File file = new File(
@@ -34,8 +46,7 @@ public class DaoImplFile implements Dao {
 					if (data[0].contains("Stock"))
 						stock = Integer.parseInt(data[1]);
 				}
-
-				inventory.add(new Product(name, new Amount(price), true, stock));
+				inventory.add(new Product(name, new Amount(price), true, stock)); 
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
