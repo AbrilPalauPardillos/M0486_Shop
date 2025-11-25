@@ -1,20 +1,18 @@
 package main;
 
 import java.io.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import dao.Dao;
-import dao.DaoImplFile;
+import dao.DaoImplJDBC;
 import model.*;
-import exception.LimitLoginException;
 
 public class Shop {
 
 	private static final double TAX_RATE = 1.56;
 
-	private Dao dao;
+	private DaoImplJDBC dao; 
+	
 	private ArrayList<Product> inventory;
 	private ArrayList<Sale> sales;
 	private Amount cash;
@@ -22,7 +20,7 @@ public class Shop {
 	private int numberSales;
 
 	public Shop() {
-		dao = new DaoImplFile();
+		dao = new DaoImplJDBC(); 
 		inventory = new ArrayList<>();
 		sales = new ArrayList<>();
 		cash = new Amount(0.0);
@@ -30,19 +28,20 @@ public class Shop {
 		numberSales = 0;
 	}
 
-	// MÉTODOS DE INVENTARIO
-
-	// CARGAR
 	public void loadInventory() {
+		dao.connect();
 		this.inventory = new ArrayList<>(dao.getInventory());
+		this.numberProducts = this.inventory.size();
+		dao.disconnect();
 	}
 
-	// EXPORTAR
 	public boolean writeInventory() {
-		return dao.writeInventory(inventory);
+		dao.connect();
+		boolean result = dao.writeInventory(inventory);
+		dao.disconnect();
+		return result;
 	}
 
-	// AÑADIR
 	public void addProduct() {
 		if (isInventoryFull()) {
 			System.out.println("No se pueden añadir más productos");
@@ -53,22 +52,44 @@ public class Shop {
 		String name = scanner.nextLine();
 		System.out.print("Precio mayorista: ");
 		double wholesalerPrice = scanner.nextDouble();
+		double publicPrice = wholesalerPrice * 1.5;
 		System.out.print("Stock: ");
 		int stock = scanner.nextInt();
-
-		addProduct(new Product(name, new Amount(wholesalerPrice), true, stock));
+		
+		addProduct(new Product(0, name, new Amount(publicPrice), new Amount(wholesalerPrice), true, stock));
 	}
-
+	
 	public void addProduct(Product product) {
 		if (isInventoryFull()) {
 			System.out.println("No se pueden añadir más productos, se ha alcanzado el máximo de " + inventory.size());
 			return;
 		}
+		
 		inventory.add(product);
 		numberProducts++;
+		
+		dao.connect();
+		dao.addProduct(product); 
+		dao.disconnect();
+	}
+	
+	public void updateProduct(Product product) {
+		dao.connect();
+		dao.updateProduct(product);
+		dao.disconnect();
 	}
 
-	// QUITAR
+	public void deleteProduct(Product product) {
+		if (inventory.remove(product)) {
+			numberProducts--;
+			dao.connect();
+			dao.deleteProduct(product.getId()); 
+			dao.disconnect();
+		} else {
+			System.out.println("Error al eliminar producto de la lista en memoria.");
+		}
+	}
+	
 	public void removeProduct() {
 		if (inventory.size() == 0) {
 			System.out.println("Inventario vacío, no se puede eliminar nada");
@@ -80,11 +101,8 @@ public class Shop {
 		Product product = findProduct(name);
 
 		if (product != null) {
-			if (inventory.remove(product)) {
-				System.out.println("El producto " + name + " ha sido eliminado");
-			} else {
-				System.out.println("No se ha encontrado el producto " + name);
-			}
+			deleteProduct(product);
+			System.out.println("El producto " + name + " ha sido eliminado");
 		} else {
 			System.out.println("No se ha encontrado el producto " + name);
 		}
@@ -100,6 +118,9 @@ public class Shop {
 			System.out.print("Seleccione la cantidad a añadir: ");
 			int stock = scanner.nextInt();
 			product.setStock(product.getStock() + stock);
+			
+			updateProduct(product); 
+			
 			System.out.println("Stock actualizado a " + product.getStock());
 		} else {
 			System.out.println("Producto no encontrado");
@@ -114,6 +135,7 @@ public class Shop {
 		}
 	}
 
+	
 	public boolean isInventoryFull() {
 		return numberProducts >= 10;
 	}
@@ -126,8 +148,6 @@ public class Shop {
 		}
 		return null;
 	}
-
-	// MÉTODOS DE CAJA Y VENTAS
 
 	public void showCash() {
 		System.out.println("Dinero actual: " + cash);
@@ -152,11 +172,14 @@ public class Shop {
 			if (product != null && product.isAvailable()) {
 				totalAmount.setValue(totalAmount.getValue() + product.getPublicPrice().getValue());
 				product.setStock(product.getStock() - 1);
-				shoppingCart.add(product);
-
-				if (product.getStock() == 0)
+				
+				if (product.getStock() == 0) {
 					product.setAvailable(false);
-
+				}
+				
+				updateProduct(product); 
+				
+				shoppingCart.add(product);
 				System.out.println("Producto añadido con éxito");
 			} else {
 				System.out.println("Producto no encontrado o sin stock");
@@ -192,8 +215,6 @@ public class Shop {
 		}
 		System.out.println("Total ventas: " + total);
 	}
-
-	// OTROS MÉTODOS
 
 	public ArrayList<Product> getInventory() {
 		return inventory;

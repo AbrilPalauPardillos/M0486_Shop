@@ -32,27 +32,10 @@ public class ProductView extends JDialog implements ActionListener{
 	private JTextField textFieldPrice;
 	private final JPanel contentPanel = new JPanel();
 
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		try {
-//			ProductView dialog = new ProductView();
-//			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//			dialog.setVisible(true);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
-	/**
-	 * Create the dialog.
-	 */
 	public ProductView(Shop shop, int option) {
 		this.shop = shop;
 		this.option = option;
 		
-		// main configuration dialog
 		switch (option) {
 		case Constants.OPTION_ADD_PRODUCT:
 			setTitle("Añadir Producto");			
@@ -73,7 +56,6 @@ public class ProductView extends JDialog implements ActionListener{
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
-		// name section
 		JLabel lblName = new JLabel("Nombre producto:");
 		lblName.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblName.setBounds(33, 10, 119, 19);
@@ -85,7 +67,6 @@ public class ProductView extends JDialog implements ActionListener{
 		contentPanel.add(textFieldName);
 		textFieldName.setColumns(10);		
 		
-		// stock section
 		JLabel lblStock = new JLabel("Stock producto:");
 		lblStock.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblStock.setBounds(33, 50, 119, 19);
@@ -104,7 +85,6 @@ public class ProductView extends JDialog implements ActionListener{
 			textFieldStock.setVisible(false);
 		}
 		
-		// price section
 		JLabel lblPrice = new JLabel("Precio producto:");
 		lblPrice.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblPrice.setBounds(33, 90, 119, 19);
@@ -146,12 +126,10 @@ public class ProductView extends JDialog implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		if (e.getSource() == okButton) {
 			Product product;
 			switch (this.option) {
 			case Constants.OPTION_ADD_PRODUCT:
-				// check product does not exist
 				product = shop.findProduct(textFieldName.getText());
 				
 				if (product != null) {
@@ -159,21 +137,24 @@ public class ProductView extends JDialog implements ActionListener{
 							JOptionPane.ERROR_MESSAGE);
 					
 				} else {
-					product = new Product(textFieldName.getText(), 
-							new Amount(Double.parseDouble(textFieldPrice.getText())) ,
+					Amount wholesalerPrice = new Amount(Double.parseDouble(textFieldPrice.getText()));
+					Amount publicPrice = new Amount(wholesalerPrice.getValue() * 1.5); 
+					
+					product = new Product(0, textFieldName.getText(), 
+							publicPrice,
+							wholesalerPrice,
 							true,
 							Integer.parseInt(textFieldStock.getText()));
-					shop.addProduct(product);
+					
+					shop.addProduct(product); 
+					
 					JOptionPane.showMessageDialog(null, "Producto añadido ", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
-					// release current screen
 					dispose();	
 				}
-				
 				break;
 				
 			case Constants.OPTION_ADD_STOCK:
-				// check product exists
 				product = shop.findProduct(textFieldName.getText());
 				
 				if (product == null) {
@@ -182,16 +163,16 @@ public class ProductView extends JDialog implements ActionListener{
 					
 				} else {					
 					product.setStock(product.getStock() + Integer.parseInt(textFieldStock.getText()));
+					
+					shop.updateProduct(product); 
+					
 					JOptionPane.showMessageDialog(null, "Stock actualizado ", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
-					// release current screen
 					dispose();	
 				}
-				
 				break;
 				
 			case Constants.OPTION_REMOVE_PRODUCT:
-				// check product exists
 				product = shop.findProduct(textFieldName.getText());
 				
 				if (product == null) {
@@ -199,13 +180,12 @@ public class ProductView extends JDialog implements ActionListener{
 							JOptionPane.ERROR_MESSAGE);
 					
 				} else {					
-					shop.getInventory().remove(product);
+					shop.deleteProduct(product); 
+					
 					JOptionPane.showMessageDialog(null, "Producto eliminado", "Information",
 							JOptionPane.INFORMATION_MESSAGE);
-					// release current screen
 					dispose();	
 				}
-				
 				break;
 
 			default:
@@ -215,9 +195,7 @@ public class ProductView extends JDialog implements ActionListener{
 		}
 		
 		if (e.getSource() == cancelButton) {
-			// release current screen
 			dispose();			
 		}		
 	}
-
 }
