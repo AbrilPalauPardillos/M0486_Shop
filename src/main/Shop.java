@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import dao.Dao;
 import dao.DaoImplJDBC;
 import model.*;
 
@@ -11,7 +12,7 @@ public class Shop {
 
 	private static final double TAX_RATE = 1.56;
 
-	private DaoImplJDBC dao; 
+	private  Dao dao; 
 	
 	private ArrayList<Product> inventory;
 	private ArrayList<Sale> sales;
