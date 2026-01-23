@@ -3,10 +3,10 @@ package model;
 import java.util.Date;
 import javax.persistence.Column; 
 import javax.persistence.Entity; 
-import javax.persistence.GeneratedValue; 
+import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType; 
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.Id; 
+import javax.persistence.Table; 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -17,54 +17,54 @@ public class ProductHistory {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
-    @Column(name = "id_product") 
-    private int idProduct;
+    @Column(name = "id_product")
+    private Integer idProduct;
 
-    @Column(name = "name") 
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "stock") 
-    private int stock;
+    @Column(name = "stock")
+    private Integer stock;
 
-    @Column(name = "price") 
-    private double price;
+    @Column(name = "wholesalerPrice") 
+    private Double price;
 
-    @Column(name = "available") 
-    private boolean available;
+    @Column(name = "available")
+    private Boolean available;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at") 
+    @Temporal(TemporalType.TIMESTAMP) 
+    @Column(name = "created_at")
     private Date createdAt;
 
     public ProductHistory() {
     }
 
+
     public ProductHistory(Product p) {
         this.idProduct = p.getId(); 
-        this.name = p.getName(); 
-        this.stock = p.getStock(); 
+        this.name = p.getName();
+        this.stock = p.getStock();
         this.price = p.getPrice(); 
-        this.available = p.isAvailable(); 
+        this.available = p.isAvailable();
         this.createdAt = new Date(); 
     }
 
-    // --- GETTERS Y SETTERS ---
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getIdProduct() {
+    public Integer getIdProduct() {
         return idProduct;
     }
 
-    public void setIdProduct(int idProduct) {
+    public void setIdProduct(Integer idProduct) {
         this.idProduct = idProduct;
     }
 
@@ -76,27 +76,27 @@ public class ProductHistory {
         this.name = name;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public boolean isAvailable() {
+    public Boolean getAvailable() {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(Boolean available) {
         this.available = available;
     }
 
@@ -106,11 +106,5 @@ public class ProductHistory {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "ProductHistory [id=" + id + ", idProduct=" + idProduct + ", name=" + name + 
-               ", stock=" + stock + ", price=" + price + ", createdAt=" + createdAt + "]";
     }
 }

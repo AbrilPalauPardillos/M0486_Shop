@@ -1,61 +1,116 @@
 package model;
 
-import javax.persistence.*; 
+import javax.persistence.Column; 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue; 
+import javax.persistence.GenerationType; 
+import javax.persistence.Id;
+import javax.persistence.Table; 
+import javax.persistence.Transient; 
 
 @Entity 
-@Table(name = "inventory") 
+@Table(name = "inventory")
 public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
-    @Column(name = "id")
-    private int id;
 
-    @Column(name = "name")
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column(name = "id") 
+    private Integer id; 
+
+    @Column(name = "name") 
     private String name;
 
-    @Column(name = "price")
-    private double price;
+    @Column(name = "wholesalerPrice") 
+    private Double price; 
 
     @Column(name = "stock")
-    private int stock;
+    private Integer stock;
 
-    @Column(name = "available")
-    private boolean available;
+    @Column(name = "available") 
+    private Boolean available;
 
     @Transient 
     private Amount publicPrice;
-    @Transient
+
+    @Transient 
     private Amount wholesalerPrice;
 
-    public Product() {}
+    public Product() {
+    }
 
     public Product(int id, String name, Amount publicPrice, Amount wholesalerPrice, boolean available, int stock) {
         this.id = id;
         this.name = name;
         this.publicPrice = publicPrice;
         this.wholesalerPrice = wholesalerPrice;
-        this.price = wholesalerPrice.getValue(); 
+        this.price = wholesalerPrice.getValue();
         this.available = available;
         this.stock = stock;
     }
 
-    // Getters y Setters...
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-    public int getStock() { return stock; }
-    public void setStock(int stock) { this.stock = stock; }
-    public boolean isAvailable() { return available; }
-    public void setAvailable(boolean available) { this.available = available; }
-    
-    public Amount getWholesalerPrice() { return new Amount(price); }
-    public Amount getPublicPrice() { return new Amount(price * 1.5); }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public Boolean isAvailable() {
+        return available != null && available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+
+
+    public Amount getPublicPrice() {
+        return new Amount(this.price != null ? this.price * 1.5 : 0.0);
+    }
+
+    public void setPublicPrice(Amount publicPrice) {
+        this.publicPrice = publicPrice;
+    }
+
+    public Amount getWholesalerPrice() {
+        return new Amount(this.price != null ? this.price : 0.0);
+    }
+
+    public void setWholesalerPrice(Amount wholesalerPrice) {
+        this.wholesalerPrice = wholesalerPrice;
+        if (wholesalerPrice != null) {
+            this.price = wholesalerPrice.getValue();
+        }
+    }
 
     @Override
     public String toString() {
-        return "Product [id=" + id + ", name=" + name + ", price=" + price + ", stock=" + stock + "]";
+        return "Product [id=" + id + ", name=" + name + ", wholesalerPrice=" + price + ", stock=" + stock + "]";
     }
 }
