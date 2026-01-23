@@ -3,14 +3,22 @@
   <groupId>dam1_m03_uf6_jdbc_shop_solved</groupId>
   <artifactId>dam1_m03_uf6_jdbc_shop_solved</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
   <dependencies>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.25</version>
-            <scope>runtime</scope>
-        </dependency>
-    </dependencies>
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.25</version>
+        <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>5.4.10.Final</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
