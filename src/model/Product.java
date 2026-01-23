@@ -1,111 +1,61 @@
 package model;
 
+import javax.persistence.*; 
+
+@Entity 
+@Table(name = "inventory") 
 public class Product {
-	private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "name")
     private String name;
-    private Amount publicPrice;
-    private Amount wholesalerPrice;
-    private boolean available;
+
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "stock")
     private int stock;
-    private static int totalProducts;
+
+    @Column(name = "available")
+    private boolean available;
+
+    @Transient 
+    private Amount publicPrice;
+    @Transient
+    private Amount wholesalerPrice;
+
+    public Product() {}
+
+    public Product(int id, String name, Amount publicPrice, Amount wholesalerPrice, boolean available, int stock) {
+        this.id = id;
+        this.name = name;
+        this.publicPrice = publicPrice;
+        this.wholesalerPrice = wholesalerPrice;
+        this.price = wholesalerPrice.getValue(); 
+        this.available = available;
+        this.stock = stock;
+    }
+
+    // Getters y Setters...
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+    public int getStock() { return stock; }
+    public void setStock(int stock) { this.stock = stock; }
+    public boolean isAvailable() { return available; }
+    public void setAvailable(boolean available) { this.available = available; }
     
-    public final static double EXPIRATION_RATE=0.60;
+    public Amount getWholesalerPrice() { return new Amount(price); }
+    public Amount getPublicPrice() { return new Amount(price * 1.5); }
 
-	public Product(String name, Amount wholesalerPrice, boolean available, int stock) {
-		super();
-		this.id = totalProducts + 1;
-		this.name = name;
-		this.wholesalerPrice = wholesalerPrice;
-		this.publicPrice = new Amount(wholesalerPrice.getValue() * 2);
-		this.available = available;
-		this.stock = stock;
-		totalProducts++;
-	}
-	
-	public Product(int id, String name, Amount publicPrice, Amount wholesalerPrice, boolean available, int stock) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.publicPrice = publicPrice;
-		this.wholesalerPrice = wholesalerPrice;
-		this.available = available;
-		this.stock = stock;
-	}
-
-	public Product(String name, Amount publicPrice, Amount wholesalerPrice, boolean available, int stock) {
-		super();
-		this.id = totalProducts + 1;
-		this.name = name;
-		this.publicPrice = publicPrice;
-		this.wholesalerPrice = wholesalerPrice;
-		this.available = available;
-		this.stock = stock;
-		totalProducts++;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Amount getPublicPrice() {
-		return publicPrice;
-	}
-
-	public void setPublicPrice(Amount publicPrice) {
-		this.publicPrice = publicPrice;
-	}
-
-	public Amount getWholesalerPrice() {
-		return wholesalerPrice;
-	}
-
-	public void setWholesalerPrice(Amount wholesalerPrice) {
-		this.wholesalerPrice = wholesalerPrice;
-	}
-
-	public boolean isAvailable() {
-		return available;
-	}
-
-	public void setAvailable(boolean available) {
-		this.available = available;
-	}
-
-	public int getStock() {
-		return stock;
-	}
-
-	public void setStock(int stock) {
-		this.stock = stock;
-	}
-
-	public static int getTotalProducts() {
-		return totalProducts;
-	}
-
-	public static void setTotalProducts(int totalProducts) {
-		Product.totalProducts = totalProducts;
-	}
-	
-	public void expire() {
-		this.publicPrice.setValue(this.getPublicPrice().getValue()*EXPIRATION_RATE); ;
-	}
-
-	@Override
-	public String toString() {
-		return "Product [id=" + id + ", name=" + name + ", publicPrice=" + publicPrice + ", wholesalerPrice=" + wholesalerPrice
-				+ ", available=" + available + ", stock=" + stock + "]";
-	}
+    @Override
+    public String toString() {
+        return "Product [id=" + id + ", name=" + name + ", price=" + price + ", stock=" + stock + "]";
+    }
 }
