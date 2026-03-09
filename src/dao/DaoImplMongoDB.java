@@ -43,36 +43,50 @@ public class DaoImplMongoDB implements Dao {
     }
 
     @Override
-    public boolean writeInventory(List<Product> inventory) { 
+    public boolean writeInventory(List<Product> inventory) {
         try {
             for (Product p : inventory) {
                 Document doc = productToDocument(p);
-                doc.append("created_at", new java.util.Date()); 
+                doc.append("event", "MANUAL_EXPORT");
+                doc.append("created_at", new java.util.Date()); // [cite: 37]
+                
                 historicalColl.insertOne(doc);
             }
             return true;
         } catch (Exception e) {
-            e.printStackTrace(); 
-            return false;
+            return false; // [cite: 79]
         }
     }
 
     @Override
     public void addProduct(Product product) {
-        inventoryColl.insertOne(productToDocument(product));
+        Document doc = productToDocument(product);
+        
+        inventoryColl.insertOne(doc); 
+        
+        Document historyDoc = productToDocument(product);
+        historyDoc.append("event", "INSERT");
+        historyDoc.append("created_at", new java.util.Date()); 
+        historicalColl.insertOne(historyDoc);
     }
 
     @Override
     public void updateProduct(Product product) {
         inventoryColl.updateOne(
-            Filters.eq("id", product.getId()),
-            Updates.set("stock", product.getStock())
+            com.mongodb.client.model.Filters.eq("id", product.getId()),
+            com.mongodb.client.model.Updates.set("stock", product.getStock())
         );
+        Document historyDoc = productToDocument(product);
+        historyDoc.append("event", "UPDATE_STOCK");
+        historyDoc.append("created_at", new java.util.Date()); 
+        historicalColl.insertOne(historyDoc);
     }
 
     @Override
     public void deleteProduct(int productId) {
-        inventoryColl.deleteOne(Filters.eq("id", productId)); 
+        inventoryColl.deleteOne(com.mongodb.client.model.Filters.eq("id", productId));
+        
+        System.out.println("Producto " + productId + " eliminado de inventory, pero conservado en historical.");
     }
 
     @Override
