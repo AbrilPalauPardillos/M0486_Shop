@@ -9,13 +9,13 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id; // Cambiado a Integer para aceptar nulos
+    private Integer id; 
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "wholesalerPrice") // Nombre exacto de tu tabla SQL
-    private Double price; // Cambiado a Double para evitar el error de la imagen
+    @Column(name = "wholesalerPrice") 
+    private Double price; 
 
     @Column(name = "stock")
     private Integer stock;
@@ -50,7 +50,6 @@ public class Product {
     public Boolean isAvailable() { return available != null && available; }
     public void setAvailable(Boolean available) { this.available = available; }
 
-    // Compatibilidad con la lógica de Amount
     public Amount getWholesalerPrice() { return new Amount(this.price != null ? this.price : 0.0); }
     public Amount getPublicPrice() { return new Amount((this.price != null ? this.price : 0.0) * 1.5); }
 }

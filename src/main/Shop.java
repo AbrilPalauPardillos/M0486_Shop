@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import dao.Dao;
-import dao.DaoImplHibernate; 
+import dao.DaoImplMongoDB;
 import model.*;
 
 public class Shop {
 
     private static final double TAX_RATE = 1.56;
-    private Dao dao; //
+    private Dao dao; 
     private ArrayList<Product> inventory;
     private ArrayList<Sale> sales;
     private Amount cash;
@@ -18,7 +18,7 @@ public class Shop {
     private int numberSales;
 
     public Shop() {
-        this.dao = new DaoImplHibernate(); 
+        this.dao = new DaoImplMongoDB(); 
         this.inventory = new ArrayList<>();
         this.sales = new ArrayList<>();
         this.cash = new Amount(0.0);

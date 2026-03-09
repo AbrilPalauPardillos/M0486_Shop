@@ -6,8 +6,8 @@ import dao.*;
 public class Employee extends Person implements Logable{
 	private int employeeId;
 	private String password;
-	// connection using JDBC SQL
-	private Dao dao = new DaoImplJDBC();
+
+	private Dao dao = new DaoImplMongoDB();
 	
 //	public static final int USER = 123;
 //	public static final String PASSWORD = "test";
@@ -60,22 +60,9 @@ public class Employee extends Person implements Logable{
 	 */
 	@Override
 	public boolean login(int user, String password) {
-//		if (USER == user && PASSWORD.equals(password)) {
-//			return true;
-//		} 
-		boolean success = false;
-		
-		// connect to data
-		dao.connect();
-		
-		// get employee data
-		if(dao.getEmployee(user, password) != null) {
-			success =  true;
-		}
-		
-		// disconnect data
-		dao.disconnect();
-		return success;
+	    this.dao.connect(); 
+	    Employee emp = dao.getEmployee(user, password);
+	    this.dao.disconnect();
+	    return emp != null;
 	}
-
 }

@@ -46,6 +46,7 @@ public class DaoImplFile implements Dao {
 					if (data[0].contains("Stock"))
 						stock = Integer.parseInt(data[1]);
 				}
+				
 				inventory.add(new Product(name, new Amount(price), true, stock)); 
 			}
 		} catch (IOException e) {

@@ -16,18 +16,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
-public class LoginView extends JFrame implements ActionListener{
+public class LoginView extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textFieldEmployeeId;
 	private JTextField textFieldPassword;
 	private JButton btnLogin;
-	private int counterErrorLogin;
+	private int counterErrorLogin = 0; 
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -41,16 +38,12 @@ public class LoginView extends JFrame implements ActionListener{
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public LoginView() {
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
@@ -75,57 +68,51 @@ public class LoginView extends JFrame implements ActionListener{
 		btnLogin = new JButton("Acceder");
 		btnLogin.setBounds(308, 208, 89, 23);
 		contentPane.add(btnLogin);
-		// listen button 
 		btnLogin.addActionListener(this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnLogin) {
-			// in case clicks button
 			String employeeId = textFieldEmployeeId.getText();
 			String password = textFieldPassword.getText();
 
 			if (employeeId.isEmpty() || password.isEmpty()) {
 				JOptionPane.showMessageDialog(null, "Usuario y contraseña son obligatorios", "Error",
 						JOptionPane.ERROR_MESSAGE);
-
-			} else {
-				Employee employee = new Employee();
-				try {
-					boolean logged = employee.login(Integer.parseInt(employeeId), password);
-					
-					if (Constants.MAX_LOGIN_TIMES <= counterErrorLogin) {
-						throw new LimitLoginException("Error login superado", counterErrorLogin);
-					}
-					if (logged) {
-						// redirect to shop window
-						ShopView shop = new ShopView();
-						shop.setExtendedState(NORMAL);
-						shop.setVisible(true);
-						
-						// release current screen
-						dispose();					
-						
-					} else {
-						counterErrorLogin++;
-						JOptionPane.showMessageDialog(null, "Usuario o password incorrectos ", "Error",
-								JOptionPane.ERROR_MESSAGE);
-						
-						// clean login form
-						textFieldEmployeeId.setText("");
-						textFieldPassword.setText("");
-					}
-				} catch (LimitLoginException ex) {
-					// TODO: handle exception
-					JOptionPane.showMessageDialog(null, ("Error login, superados los " + counterErrorLogin + " intentos"), "Error",
-							JOptionPane.ERROR_MESSAGE);
-					// release current screen
-					dispose();
-				}
-				
+				return;
 			}
 
+			try {
+				if (counterErrorLogin >= Constants.MAX_LOGIN_TIMES) {
+					throw new LimitLoginException("Error login superado", counterErrorLogin);
+				}
+
+				Employee employee = new Employee();
+				boolean logged = employee.login(Integer.parseInt(employeeId), password);
+
+				if (logged) {
+					ShopView shop = new ShopView();
+					shop.setExtendedState(NORMAL);
+					shop.setVisible(true);
+					dispose();					
+				} else {
+					counterErrorLogin++;
+					JOptionPane.showMessageDialog(null, "Usuario o password incorrectos", "Error",
+							JOptionPane.ERROR_MESSAGE);
+					
+					textFieldEmployeeId.setText("");
+					textFieldPassword.setText("");
+				}
+
+			} catch (NumberFormatException nfe) {
+				JOptionPane.showMessageDialog(null, "El ID de empleado debe ser un número", "Error", 
+						JOptionPane.ERROR_MESSAGE);
+			} catch (LimitLoginException ex) {
+				JOptionPane.showMessageDialog(null, "Error login, superados los " + counterErrorLogin + " intentos", "Error",
+						JOptionPane.ERROR_MESSAGE);
+				dispose();
+			}
 		}
 	}
 }
