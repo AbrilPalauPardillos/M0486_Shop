@@ -1,10 +1,11 @@
-package main;
+  package main;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import dao.Dao;
 import dao.DaoImplMongoDB;
+import dao.DaoImplObjectDB;
 import model.*;
 
 public class Shop {
@@ -18,7 +19,7 @@ public class Shop {
     private int numberSales;
 
     public Shop() {
-        this.dao = new DaoImplMongoDB(); 
+        this.dao = new DaoImplObjectDB(); 
         this.inventory = new ArrayList<>();
         this.sales = new ArrayList<>();
         this.cash = new Amount(0.0);

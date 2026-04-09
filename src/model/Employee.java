@@ -1,16 +1,20 @@
 package model;
 
 import main.Logable;
+
+import javax.persistence.Entity;
+import javax.persistence.Transient;
+
 import dao.*;
 
+@Entity
 public class Employee extends Person implements Logable{
 	private int employeeId;
 	private String password;
-
-	private Dao dao = new DaoImplMongoDB();
 	
-//	public static final int USER = 123;
-//	public static final String PASSWORD = "test";
+	@Transient
+	private Dao dao = new DaoImplObjectDB();
+	
 	
 	public Employee(String name) {
 		super(name);
@@ -60,9 +64,9 @@ public class Employee extends Person implements Logable{
 	 */
 	@Override
 	public boolean login(int user, String password) {
-	    this.dao.connect(); 
-	    Employee emp = dao.getEmployee(user, password);
-	    this.dao.disconnect();
+	    this.dao.connect();
+	    Employee emp = dao.getEmployee(user, password); 
+	    this.dao.disconnect(); 
 	    return emp != null;
 	}
 }

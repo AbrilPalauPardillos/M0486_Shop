@@ -22,9 +22,24 @@
     <groupId>org.mongodb</groupId>
     <artifactId>mongo-java-driver</artifactId>
     <version>3.10.2</version>
-</dependency>
+	</dependency>
 
-  </dependencies>
+    <!-- ObjectDB dependency -->
+    <dependency>
+        <groupId>com.objectdb</groupId>
+        <artifactId>objectdb</artifactId>
+        <version>2.9.2</version>
+    </dependency>
+</dependencies>
+        <!-- Define ObjectDB repository -->
+<repositories>
+    <repository>
+        <id>objectdb</id>
+        <name>ObjectDB Repository</name>
+        <url>https://m2.objectdb.com</url>
+    </repository>
+</repositories>
+
 
   <build>
     <sourceDirectory>src</sourceDirectory>
